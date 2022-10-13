@@ -18,3 +18,28 @@ results
 <br>
 the pixels surrounding the letters have turned red because they are different in the two images
 </p>
+<h2>How to download</h2>
+<p>1: make sure you have python installed
+<br>
+windows
+</p>
+
+`python --version`
+<p> linux / mac</p>
+
+`python3 --version`
+<p>2: install packages
+<br>
+windows
+</p>
+
+`pip install pillow`
+
+linux / mac
+
+```
+sudo apt update 
+sudo apt install python3-tk
+sudo apt install python3-pil
+sudo apt-get -y install python3-pil.imagetk
+```
