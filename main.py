@@ -1,21 +1,18 @@
 import tkinter as tk
 import PIL
-from PIL import Image, ImageTk
+from PIL import Image
 
 
 def checker(img1, img2):
     def check(least_list, greater_list):
-        wrong = []
         for place, rgb in enumerate(greater_list):
             if place > (len(least_list) - 1):
-                wrong.append(greater_list[place])
                 greater_list[place] = (255, 0, 0, 255)
         for place, rgb in enumerate(least_list):
             if not least_list[place] == greater_list[place]:
                 least_list[place] = (255, 0, 0, 255)
                 greater_list[place] = (255, 0, 0, 255)
-                wrong.append(greater_list[place])
-        return [least_list, greater_list, wrong]
+        return [least_list, greater_list]
 
     def get_image(image_path):
         image = Image.open(image_path)
