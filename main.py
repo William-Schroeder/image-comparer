@@ -4,11 +4,8 @@ from PIL import Image
 
 
 def checker(img1, img2):
-    def check(least_list, greater_list):
-        for place, rgb in enumerate(greater_list):
-            if place > (len(least_list) - 1):
-                greater_list[place] = (255, 0, 0, 255)
-        for place, rgb in enumerate(least_list):
+    def check_pixels(least_list, greater_list):
+        for place, color in enumerate(least_list):
             if not least_list[place] == greater_list[place]:
                 least_list[place] = (255, 0, 0, 255)
                 greater_list[place] = (255, 0, 0, 255)
@@ -21,39 +18,52 @@ def checker(img1, img2):
         pixel_values = list(image_rgb.getdata())
         return [pixel_values, size[0], size[1]]
 
-    c = get_image(img1)
-    c2 = get_image(img2)
-    if len(c[0]) >= len(c2[0]):
-        checking = check(c2[0], c[0])
-        cr = checking[1]
-    else:
-        checking = check(c[0], c2[0])
-        cr = checking[0]
-    crim = PIL.Image.new(mode="RGB", size=(c[1], c[2]))
-    crim.save("img1.png")
-    crims = Image.open("img1.png")
+    # gets the pixels from each both images and sets them to different variables
+    first_image_data = get_image(img1)
+    second_image_data = get_image(img2)
+
+    pixel_checking_data = check_pixels(first_image_data[0], second_image_data[0])  # get data of different pixels
+    revised_pixel_data = pixel_checking_data[0]  # gets list of different pixels
+
+    PIL.Image.new(mode="RGB", size=(first_image_data[1], first_image_data[2])).save("img1.png")  # create blank image
+    revised_image = Image.open("img1.png")
 
     x = 0
     y = 0
-    pix = crims.load()
-    for rgb in cr:
-        x = x + 1
-        if x > c[1] - 1:
-            x = x - c[1]
+    pix = revised_image.load()
+
+    for rgb in revised_pixel_data:
+        x = x + 1  # go over one pixel on the x axis
+        if x > first_image_data[1] - 1:  # if the image is not big enough to hold next pixel
+            # goes up one y axis value
+            x = x - first_image_data[1]
             y = y + 1
-        if y > c[2] - 1:
-            y = y - c[2]
+
+        if y > first_image_data[2] - 1:
+            y = y - first_image_data[2]
+        # sets the pixel to the right color
         pix[x, y] = rgb
-    crims.save("img1.png")
+
+    revised_image.save("img1.png")  # saves new image
+
     newroot = tk.Toplevel()
     newroot.title("results")
     newframe = tk.Frame()
     newframe.pack()
+
     img = tk.PhotoImage(
-                        file='img1.png')
+                        file='./img1.png'
+    )
     imgl = tk.Label(newroot, image=img)
     imgl.pack(side=tk.LEFT)
+
+    def stop_veiw():
+        veiwoldimg['text'] = 'view original images'
+        veiwoldimg['command'] = veiw_img
+
     def veiw_img():
+        veiwoldimg['text'] = 'stop veiwing'
+        veiwoldimg['command'] = stop_veiw
         newimg = tk.PhotoImage(
             file=img1
         )
@@ -64,11 +74,13 @@ def checker(img1, img2):
         newimglabel2 = tk.Label(newroot, image=newimg2)
         newimglabel.pack(side=tk.RIGHT)
         newimglabel2.pack(side=tk.RIGHT)
+
     veiwoldimg = tk.Button(newroot,
-                           text="view pixels",
+                           text="view original images",
                            command=veiw_img)
     veiwoldimg.pack(side=tk.BOTTOM)
     newroot.mainloop()
+
 
 root = tk.Tk()
 root.geometry('600x50+250+200')
